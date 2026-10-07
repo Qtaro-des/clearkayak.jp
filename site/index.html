@@ -768,6 +768,14 @@ table.wf th.col-b {
     letter-spacing: .12em;
     cursor: pointer;
   }
+  .honeypot {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+  }
 
   /* ============================================================
      CTA BAND + FOOTER — mare-gym: 波形カーブで区切られた濃色エリアに
@@ -1628,8 +1636,15 @@ Clear Kayak Lab では、観光地やリゾート施設へのクリアカヤッ�
       method="POST"
       action="/thanks.html"
       data-netlify="true"
+      netlify-honeypot="bot-field"
     >
       <input type="hidden" name="form-name" value="contact">
+      <p class="honeypot">
+        <label>
+          この項目は入力しないでください
+          <input name="bot-field" type="text">
+        </label>
+      </p>
       <div class="field">
         <label for="company">施設名・会社名</label>
         <input
