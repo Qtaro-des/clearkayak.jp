@@ -1,0 +1,1775 @@
+<meta charset="utf-8" />
+<title>Clear Kayak Lab Design Mock</title>
+<meta name="description" content="mare-gym.jp のレイアウト構造を踏襲した Clear Kayak Lab ランディングページのデザイン案（配色・写真・動画当てこみ版）" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+JP:wght@400;500;700&display=swap" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&icon_names=thumb_up&display=block" rel="stylesheet">
+<style>
+  /* ============================================================
+     TOKENS — "clear water" palette (mare-gym の白×スカイブルーを
+     クリアカヤック向けに水色寄りへ)  light + dark
+     ============================================================ */
+  :root {
+    --ground:      #eef4f6;
+    --surface:     #ffffff;
+    --line:        #d3e0e4;
+    --line-strong: #9fbac2;
+    --ink:         #0e2830;
+    --ink-mid:     #0e2830;
+    --ink-faint:   #8aa2ab;
+    --accent:      #00a6cf;   /* water cyan (mare-gym #00A3EE の水色寄り) */
+    --accent-deep: #0a6883;   /* accent text on light                   */
+    --accent-soft: #e0f0f4;
+    --band:        #0f333d;   /* 濃色エンドゾーン（波形の先）           */
+  }
+  :root:not([data-theme="light"]) {
+    @media (prefers-color-scheme: dark) {
+      --ground:      #0b1316;
+      --surface:     #121f23;
+      --line:        #26363b;
+      --line-strong: #40575e;
+      --ink:         #e2ecef;
+      --ink-mid:     #a4bbc1;
+      --ink-faint:   #6f868d;
+      --accent:      #2ec6e8;
+      --accent-deep: #a7e2f0;
+      --accent-soft: #102c35;
+      --band:        #081f26;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground:      #0b1316;
+    --surface:     #121f23;
+    --line:        #26363b;
+    --line-strong: #40575e;
+    --ink:         #e2ecef;
+    --ink-mid:     #a4bbc1;
+    --ink-faint:   #6f868d;
+    --accent:      #2ec6e8;
+    --accent-deep: #a7e2f0;
+    --accent-soft: #102c35;
+    --band:        #081f26;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink-mid);
+    font-family: "IBM Plex Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+    font-size: clamp(16px, 0.4vw + 14.5px, 18px);
+    line-height: 1.85;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page { position: relative; z-index: 1; overflow-x: clip; }
+
+  img, video { max-width: 100%; }
+
+  /* ============================================================
+     LAYOUT PRIMITIVES
+     ============================================================ */
+  /* mare-gym.jp 基準：中央寄せの上限を ~1560px に置き、
+     左右パディングは画面幅に連動（1920px で左右 ≈9vw / 1440px 以下でほぼ全幅） */
+  .wrap {
+    width: 100%;
+    max-width: 1560px;
+    margin-inline: auto;
+    padding-inline: clamp(20px, 4vw, 56px);
+  }
+
+  section.block {
+    padding-block: clamp(64px, 10vw, 176px);
+    border-top: 1px solid var(--line);
+  }
+  section.block:first-of-type { border-top: 0; }
+  .strip + section.block { border-top: 0; }
+
+  .eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 15px;
+    letter-spacing: .34em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    margin: 0 0 18px 10px;
+  }
+
+  /* giant ghost english label — mare-gym signature */
+  .ghost {
+    font-family: Archivo, sans-serif;
+    font-weight: 900;
+    font-size: clamp(3rem, 12.5vw, 12rem);
+    line-height: .86;
+    letter-spacing: -.035em;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--line-strong);
+    margin: 0 0 .12em -.055em;
+    text-wrap: balance;
+    pointer-events: none;
+  }
+  .ghost.solid {
+    color: var(--accent);
+    -webkit-text-stroke: 0;
+    opacity: .9;
+  }
+
+  .ghost .vs {
+  font-size: 0.8em;
+  }
+
+  h2.jp {
+    font-family: "IBM Plex Sans JP", sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.35rem, 3.2vw, 2rem);
+    line-height: 1.5;
+    color: var(--ink);
+    margin: 0 0 .8em;
+    text-wrap: balance;
+  }
+  h3.jp {
+    font-family: "IBM Plex Sans JP", sans-serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    line-height: 1.6;
+    color: #00a6cf;
+    margin: 0 0 .5em;
+  }
+  p { margin: 0 0 1.1em; max-width: 60ch; }
+  p:last-child { margin-bottom: 0; }
+
+  .lead { color: var(--ink); font-size: 1.2rem; }
+
+  .subhead {
+    font-family: "IBM Plex Sans JP", sans-serif;
+    font-weight: bold;
+    font-size: 1.2rem;
+    line-height: 1.75;
+    color: var(--ink);
+    margin: 0 0 1.5em;
+    padding-left: 16px;
+    border-left: 4px solid var(--accent);
+    max-width: 50ch;
+    text-wrap: pretty;
+  }
+  .prose > p { margin: 0 0 1.15em; }
+  .prose > p:last-child { margin-bottom: 0; }
+
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: clamp(28px, 5vw, 96px);
+    align-items: start;
+  }
+  @media (max-width: 820px) { .split { grid-template-columns: 1fr; gap: 32px; } }
+  
+  /* CONCEPTのみ縦並び */
+  .concept-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .concept-layout .prose,
+  .concept-layout .prose p {
+    max-width: none;
+    width: 100%;
+  }
+
+  /* DIFFERENCEのみ縦並び */
+  .difference-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .difference-layout .prose,
+  .difference-layout .prose p {
+    max-width: none;
+    width: 100%;
+  }
+
+  /* ============================================================
+     DESIGN PHILOSOPHY — responsive rearrangement
+     PC: 左=メイン画像 / 右=文章
+     1080px以下: 上段=メイン画像+前半文章 / 下段=後半文章+追加画像
+     700px以下: 1列（追加画像を後半文章の直前に表示）
+     ============================================================ */
+  .design-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    grid-template-areas:
+      "main intro"
+      "main story";
+    column-gap: clamp(28px, 5vw, 96px);
+    row-gap: 0;
+    align-items: start;
+  }
+
+  .design-image-main { grid-area: main; }
+  .design-intro      { grid-area: intro; }
+  .design-story      { grid-area: story; }
+  .design-image-sub  {
+    grid-area: sub;
+    display: none;
+  }
+
+  @media (max-width: 1080px) {
+    .design-layout {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-areas:
+        "main intro"
+        "story sub";
+      gap: clamp(32px, 5vw, 56px);
+      align-items: start;
+    }
+
+    .design-image-sub { display: block; }
+  }
+
+  @media (max-width: 700px) {
+    .design-layout {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "main"
+        "intro"
+        "sub"
+        "story";
+      gap: 32px;
+    }
+  }
+
+  /* ============================================================
+     FIGURES / IMAGE STRIPS
+     ============================================================ */
+  .figure { margin: 0; }
+  .figure img,
+  .figure video {
+    display: block;
+    width: 100%;
+    border-radius: 12px;
+    background: var(--accent-soft);
+  }
+  .figure.crop img,
+  .figure.crop video { height: clamp(300px, 34vw, 520px); object-fit: cover; }
+ .pv-video video {
+  height: clamp(400px, 44vw, 800px);
+}
+  .figure.crop.tall img,
+  .figure.crop.tall video { height: clamp(360px, 44vw, 640px); }
+  .sec-figure { margin-top: clamp(36px, 5vw, 56px); }
+
+  .strip {
+    position: relative;
+    width: 100vw;
+    margin-inline: calc(50% - 50vw);
+    height: clamp(280px, 42vw, 720px);
+    overflow: hidden;
+    background: var(--accent-soft);
+  }
+  .strip > img,
+  .strip > video { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* ============================================================
+     HEADER / NAV — swagger.jp のレイアウトを踏襲
+     （上部の細い告知バー ＋ ロゴ左寄せ＋ロゴ右隣に2段組ナビ。
+      検索・会員・カートアイコンは非掲載）
+     ライト/ダークどちらのテーマでも「白背景・黒ロゴ」で固定
+     （エンドゾーンを常に濃色にしているのと同じ考え方の例外扱い）
+     ============================================================ */
+  .topbar {
+    background: #f2f5f6;
+    border-bottom: 1px solid #d8e2e5;
+    padding-block: 8px;
+    text-align: center;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    letter-spacing: .18em;
+    color: #52666e;
+  }
+
+  header.site {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: #ffffff;
+    border-bottom: 1px solid #d8e2e5;
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    gap: clamp(28px, 5vw, 64px);
+    padding-block: 18px;
+  }
+  .brandmark { flex-shrink: 0; color: #000; line-height: 0; }
+  .brandmark img {
+  display: block;
+  width: clamp(180px, 18vw, 300px);
+  height: auto;
+}
+
+  .sitenav { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .navrow {
+    list-style: none;
+    margin: 0; padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: clamp(18px, 2.6vw, 34px);
+    row-gap: 4px;
+  }
+  .navrow a {
+    font-family: Archivo, sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: #0e2830;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .navrow a:hover { color: var(--accent); }
+  .navrow--secondary a {
+    font-weight: 500;
+    color: #556e77;
+    font-size: 12.5px;
+  }
+
+  /* ---- ハンバーガーボタン（1080px以下でのみ表示） ---- */
+  .hamburger-btn {
+    display: none;
+    width: 40px; height: 40px;
+    align-items: center; justify-content: center;
+    background: none; border: 0; padding: 0; margin: 0;
+    color: #0e2830;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .hamburger { position: relative; width: 22px; height: 15px; flex-shrink: 0; }
+  .hamburger span {
+    position: absolute; left: 0; width: 100%; height: 2px;
+    background: currentColor; border-radius: 1px;
+    transition: transform .28s ease, opacity .18s ease, top .28s ease;
+  }
+  .hamburger span:nth-child(1) { top: 0; }
+  .hamburger span:nth-child(2) { top: 6.5px; }
+  .hamburger span:nth-child(3) { top: 13px; }
+  html.nav-open .hamburger span:nth-child(1) { top: 6.5px; transform: rotate(45deg); }
+  html.nav-open .hamburger span:nth-child(2) { opacity: 0; }
+  html.nav-open .hamburger span:nth-child(3) { top: 6.5px; transform: rotate(-45deg); }
+
+  /* ---- 左からスライドインするモバイルナビ（swagger.jp のドロワーと同じ開き方） ---- */
+  html.nav-open { overflow: hidden; }
+  .nav-scrim {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    top: var(--hdr-h, 96px);
+    background: rgba(14, 40, 48, .38);
+    z-index: 59;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s ease;
+  }
+  html.nav-open .nav-scrim { opacity: 1; pointer-events: auto; }
+  .mobile-nav {
+    position: fixed;
+    left: 0; bottom: 0;
+    top: var(--hdr-h, 96px);
+    width: min(84vw, 340px);
+    background: #ffffff;
+    border-right: 1px solid #d8e2e5;
+    box-shadow: 18px 0 40px -20px rgba(14, 40, 48, .25);
+    z-index: 61;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 20px 30px 40px;
+    transform: translateX(-100%);
+    transition: transform .32s ease;
+  }
+  html.nav-open .mobile-nav { transform: translateX(0); }
+  .mobile-nav ul { list-style: none; margin: 0; padding: 0; }
+  .mobile-nav__primary { border-bottom: 1px solid #eef2f3; padding-bottom: 6px; margin-bottom: 6px; }
+  .mobile-nav li { border-top: 1px solid #eef2f3; }
+  .mobile-nav li:first-child { border-top: 0; }
+  .mobile-nav a {
+    display: block;
+    padding: 15px 2px;
+    font-family: Archivo, sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: #0e2830;
+    text-decoration: none;
+  }
+  .mobile-nav__secondary a { font-weight: 500; color: #556e77; font-size: 13.5px; }
+
+  @media (max-width: 1080px) {
+    .header-inner {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding-block: 14px;
+    }
+    .hamburger-btn { display: inline-flex; }
+    .brandmark { justify-self: center; }
+    .sitenav { display: none; }
+  }
+  @media (min-width: 1081px) {
+    .nav-scrim, .mobile-nav { display: none; }
+  }
+
+  /* ============================================================
+     HERO
+     ============================================================ */
+  .hero { position: relative; padding-top: clamp(40px, 7vw, 80px); padding-bottom: clamp(48px, 7vw, 88px); }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.03fr) minmax(0, 0.97fr);
+    gap: clamp(24px, 5vw, 56px);
+    align-items: center;
+  }
+  .hero-grid > .hero-copy { position: relative; z-index: 2; }
+  .hero-grid > .hero-media { z-index: 1; }
+  @media (min-width: 1081px) {
+    .hero-grid > .hero-copy { margin-right: -12%; }
+  }
+  @media (max-width: 1080px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 36px; }
+    /* 1080px以下：動画をタイトル直下・タグライン手前へ移動 */
+    .hero-copy { display: contents; }
+    .hero-copy .eyebrow { order: 1; }
+    .hero-copy .display { order: 2; }
+    .hero-media { order: 3; }
+    .hero-copy .tagline { order: 4; }
+    .hero-copy .subcopy { order: 5; }
+  }
+  
+
+  .hero .display {
+    font-family: Archivo, sans-serif;
+    font-weight: 900;
+    font-size: clamp(3.4rem, 12.5vw, 11rem);
+    line-height: .9;
+    letter-spacing: -.04em;
+    color: var(--ink);
+    margin: 0 0 .35em;
+    text-wrap: balance;
+  }
+  .hero .display em {
+    font-style: normal;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--accent);
+  }
+  .hero .tagline {
+    font-family: "IBM Plex Sans JP", sans-serif;
+    font-weight: 700;
+    font-size: clamp(2.5rem, 2.3rem + 0.8vw, 2.8rem);
+    color: var(--ink);
+    line-height: 1.5;
+    max-width: 24ch;
+  }
+  .hero .subcopy { 
+    margin-top: 1.1em;
+    color: var(--ink-mid);
+    max-width: 37ch;
+    font-weight: bold;
+    font-size: 24px;
+  }
+
+  .hero-media {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px -30px rgba(12, 51, 61, .35);
+  }
+  .hero-media video,
+  .hero-media img.fallback {
+    display: block;
+    width: 100%;
+    height: clamp(380px, 60vh, 720px);
+    object-fit: cover;
+  }
+ 
+  /* ============================================================
+     TABLES — comparison / spec
+     mare-gym.jp「PRICE」表のデザインを踏襲：
+     枠線なし・余白多め・ピル型の見出し（下向き三角つき）
+     ============================================================ */
+  .tbl-scroll {
+    overflow-x: auto;
+    margin-top: 44px;
+    background: var(--surface);
+    border-radius: 16px;
+    padding: clamp(18px, 3vw, 40px);
+  }
+  table.wf {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 12px;
+    font-family: "IBM Plex Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+    font-size: 16px;
+    min-width: 620px;
+	table-layout: fixed;
+  }
+
+table.wf th.col-label {
+  width: 20%;
+}
+
+table.wf th.col-a,
+table.wf th.col-b {
+  width: 40%;
+}
+  table.wf caption {
+    text-align: left;
+    padding: 0 15px 16px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 20px;
+	font-weight: 700;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+	
+	table.wf th.col-20 {
+		
+	  width: 20%;
+	
+	}
+
+	table.wf th.col-40 {
+	  width: 40%;
+	}
+	table.wf thead th.col-label > span {
+	  display: block;
+	  width: 100%;
+	}
+
+  /* --- 見出し行：ピル（クリア/自社 = 水色、他社/通常 = 濃色、項目 = ライトグレー） --- */
+  table.wf thead th {
+    text-align: left;
+    vertical-align: bottom;
+    font-weight: 700;
+    padding: 0 6px 20px;
+  }
+  table.wf thead th > span {
+    position: relative;
+    display: inline-block;
+    padding: 12px 22px;
+    border-radius: 8px;
+    font-size: 15px;
+    letter-spacing: .02em;
+    line-height: 1.2;
+  }
+  table.wf thead th.col-label > span {
+    background: var(--accent);
+    color: #fff;
+  }
+  table.wf thead th.col-a > span,
+  table.wf thead th.col-b > span {
+    display: block;
+    color: #fff;
+  }
+  table.wf thead th.col-a > span { background: var(--accent); }
+  table.wf thead th.col-b > span { background: var(--band); }
+  table.wf thead th.col-a > span::after,
+  table.wf thead th.col-b > span::after {
+    content: "";
+    position: absolute;
+    left: 18px;
+    top: 100%;
+    border: 8px solid transparent;
+    border-top-width: 10px;
+  }
+  table.wf thead th.col-a > span::after { border-top-color: var(--accent); }
+  table.wf thead th.col-b > span::after { border-top-color: var(--band); }
+
+  /* --- 本文行：枠線なし・余白多め、行下にごく薄いライン --- */
+  table.wf tbody th,
+  table.wf tbody td {
+	font-weight: 500;
+    padding: 16px 18px;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid color-mix(in srgb, var(--line-strong) 28%, transparent);
+  }
+  table.wf tbody tr:last-child th,
+  table.wf tbody tr:last-child td { border-bottom: 0; }
+  table.wf tbody th {
+    font-weight: 700;
+    color: var(--ink);
+    white-space: nowrap;
+    padding-left: 15px;
+  }
+  table.wf tbody td { color: var(--ink-mid); }
+  table.wf tbody td.hl { color: var(--accent); font-weight: 700; }
+
+  /* ============================================================
+     STACKED VALUE ROWS — Business Value
+     ============================================================ */
+  .rows { margin-top: 36px; border-top: 1px solid var(--line); }
+  .row {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 24px;
+    padding: 26px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .row .mk {
+    font-family: Archivo, sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    color: var(--accent);
+    letter-spacing: .06em;
+  }
+
+  /* ============================================================
+     SOLUTION CARDS — mare-gym trainer-card style
+     ============================================================ */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 40px;
+  }
+  @media (max-width: 820px) { .cards { grid-template-columns: 1fr; } }
+  .card { display: flex; flex-direction: column; gap: 14px; }
+  .card .shot {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 11;
+    object-fit: cover;
+    border-radius: 10px;
+    display: block;
+    background: var(--accent-soft);
+  }
+  .card .cap {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    letter-spacing: .2em;
+    color: var(--accent-deep);
+  }
+  /* 2x2 grid variant — Product Features detail cards (no TYPE caption) */
+  .cards.cols-2 { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 700px) { .cards.cols-2 { grid-template-columns: 1fr; } }
+
+  .cards.cols-2 .card h3.jp {
+    margin-bottom: -6px;
+  }
+
+  /* PRODUCT：画像を大きく、文章を小さく配置 */
+  .product-feature {
+    align-items: start;
+  }
+
+  /* 1段目：画像65% / 文章35% */
+  .product-feature--image-left {
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 0.9fr);
+  }
+
+  /* 2段目：文章35% / 画像65% */
+  .product-feature--image-right {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.7fr);
+  }
+  
+  /* PRODUCT：横長画像 16:7 */
+  .figure.crop.tall.product-wide img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 7;
+    object-fit: cover;
+  }
+
+  /* PRODUCT冒頭の文章を横幅いっぱいに */
+  #product > .subhead,
+  #product > .prose,
+  #product > .prose p {
+    max-width: none;
+    width: 100%;
+  }
+
+  @media (max-width: 820px) {
+    .product-feature--image-left,
+    .product-feature--image-right {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ============================================================
+     FAQ ACCORDION
+     ============================================================ */
+  .faq { margin-top: 36px; border-top: 1px solid var(--line); }
+  .faq details { border-bottom: 1px solid var(--line); }
+  .faq summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 20px 40px 20px 40px;
+    position: relative;
+    font-family: "IBM Plex Sans JP", sans-serif;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::before {
+    content: "Q";
+    position: absolute; left: 0; top: 20px;
+    font-family: Archivo, sans-serif; font-weight: 800;
+    color: var(--accent);
+  }
+  .faq summary::after {
+    content: "+";
+    position: absolute; right: 4px; top: 18px;
+    font-size: 20px; color: var(--ink-faint);
+  }
+  .faq details[open] summary::after { content: "\2212"; }
+  .faq .a {
+    padding: 0 40px 22px 40px;
+    position: relative;
+    color: var(--ink-mid);
+  }
+  .faq .a::before {
+    content: "A";
+    position: absolute; left: 0; top: 0;
+    font-family: Archivo, sans-serif; font-weight: 800;
+    color: var(--ink-faint);
+  }
+
+  /* ============================================================
+     CONTACT FORM
+     ============================================================ */
+  .form {
+    margin-top: 40px;
+    display: grid;
+    gap: 20px;
+    max-width: 560px;
+  }
+  .field { display: grid; gap: 8px; }
+  .field label {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    letter-spacing: .16em;
+    color: var(--ink-faint);
+  }
+  .field .input {
+    height: 46px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+  }
+  .field .input.area { height: 130px; }
+  .btn {
+    justify-self: start;
+    padding: 14px 34px;
+    border: 0;
+    border-radius: 999px;
+    color: #fff;
+    background: var(--accent);
+    font-family: Archivo, sans-serif;
+    font-weight: 800;
+    letter-spacing: .12em;
+    cursor: pointer;
+  }
+
+  /* ============================================================
+     CTA BAND + FOOTER — mare-gym: 波形カーブで区切られた濃色エリアに
+     ロゴ・円形予約ボタン・フッターナビをまとめて配置
+     ============================================================ */
+  .endzone {
+    --fg:        #eef5f6;
+    --fg-mid:    #a9c0c5;
+    --fg-faint:  #6f898f;
+    --fg-line:   rgba(255, 255, 255, .16);
+    position: relative;
+    margin-top: clamp(80px, 12vw, 160px);
+    background: var(--band);
+    color: var(--fg-mid);
+  }
+  .endzone .wave {
+    position: absolute;
+    left: 0;
+    bottom: 100%;
+    width: 100%;
+    height: clamp(70px, 10vw, 130px);
+    display: block;
+    fill: var(--band);
+  }
+  .endzone .wrap { position: relative; z-index: 1; }
+
+  .cta-band {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: clamp(28px, 6vw, 72px);
+    padding-block: clamp(48px, 8vw, 90px);
+  }
+  @media (max-width: 860px) {
+    .cta-band { grid-template-columns: 1fr; justify-items: start; gap: 28px; }
+  }
+  .cta-band .res-logo { display: block; color: #fff; text-decoration: none; }
+  .cta-band .res-logo svg {
+    display: block;
+    width: clamp(220px, 26vw, 300px);
+    height: auto;
+    fill: currentColor;
+  }
+  .cta-band .pitch {
+    color: var(--fg-mid);
+    font-size: 14px;
+    max-width: 34ch;
+  }
+
+  footer.site {
+    padding-block: 56px;
+    background: transparent;
+    color: var(--fg-mid);
+  }
+  .foot-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 40px;
+  }
+  @media (max-width: 720px) { .foot-grid { grid-template-columns: 1fr; } }
+  .foot-grid h4 {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px; letter-spacing: .22em;
+    color: var(--fg-faint);
+    margin: 0 0 14px;
+  }
+  .foot-grid ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .foot-grid a { color: var(--fg-mid); text-decoration: none; font-size: 13px; }
+  .foot-grid a:hover { color: var(--fg); }
+  .foot-grid .brand-sm { color: var(--fg); }
+  .foot-grid .brand-sm svg { display: block; width: 190px; height: auto; fill: currentColor; }
+  .copyright {
+    margin-top: 40px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--fg-faint);
+    letter-spacing: .1em;
+  }
+
+  footer.site .brandmark img {
+  filter: brightness(0) invert(1);
+  }
+
+  /* ============================================================
+     FIXED CIRCULAR CTA — mare-gym "予約する / RESERVATION"
+     ============================================================ */
+  .cta-fab {
+    position: fixed;
+    right: clamp(14px, 3vw, 34px);
+    bottom: clamp(14px, 3vw, 34px);
+    width: 116px; height: 116px;
+    z-index: 50;
+    border-radius: 50%;
+    background: #C7FF00;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+    box-shadow: 0 16px 30px -12px rgba(0, 102, 131, .5);
+  }
+  .cta-fab .core {
+    font-family: Archivo, sans-serif;
+    font-weight: 800;
+    font-size: 11px;
+    letter-spacing: .1em;
+    color: #000;
+    line-height: 1.4;
+  }
+  .cta-fab .ring {
+    position: absolute;
+    inset: 6px;
+    animation: spin 14s linear infinite;
+  }
+  .cta-fab .ring text {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 7.7px;
+    font-weight: bold;
+    letter-spacing: .32em;
+    fill: #000;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .cta-fab .ring { animation: none; } }
+
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+</style>
+
+<div class="page">
+
+  <!-- ===================== HEADER ===================== -->
+  <header class="site">
+    <div class="wrap header-inner">
+      <button class="hamburger-btn" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="mobile-nav">
+        <span class="hamburger"><span></span><span></span><span></span></span>
+      </button>
+      <a class="brandmark" href="#top" aria-label="CLEAR KAYAK LAB"><img src="assets/clearkayaklab_logo.svg" alt="CLEAR KAYAK LAB"></a>
+      <nav class="sitenav" aria-label="サイト内メニュー">
+        <ul class="navrow navrow--primary">
+          <li><a href="#concept">CONCEPT</a></li>
+          <li><a href="#difference">DIFFERENCE</a></li>
+          <li><a href="#design">DESIGN</a></li>
+          <li><a href="#product">PRODUCT</a></li>
+        </ul>
+        <ul class="navrow navrow--secondary">
+          <li><a href="#business">BUSINESS</a></li>
+          <li><a href="#solutions">SOLUTIONS</a></li>
+          <!-- <li><a href="#tour">TOUR</a></li> -->
+          <li><a href="#compare">COMPARE</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#contact">CONTACT</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- swagger.jp と同じ開き方：左からスライドインするドロワー＋背景スクリム -->
+  <div class="nav-scrim" tabindex="-1"></div>
+  <nav id="mobile-nav" class="mobile-nav" aria-label="モバイルメニュー">
+    <ul class="mobile-nav__primary">
+      <li><a href="#concept">CONCEPT</a></li>
+      <li><a href="#difference">DIFFERENCE</a></li>
+      <li><a href="#design">DESIGN</a></li>
+      <li><a href="#product">PRODUCT</a></li>
+    </ul>
+    <ul class="mobile-nav__secondary">
+      <li><a href="#business">BUSINESS</a></li>
+      <li><a href="#solutions">SOLUTIONS</a></li>
+      <!-- <li><a href="#tour">TOUR</a></li> -->
+      <li><a href="#compare">COMPARE</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#contact">CONTACT</a></li>
+    </ul>
+  </nav>
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero wrap" id="top">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow" style="margin-bottom:22px;">CLEAR KAYAK LAB</p>
+        <h1 class="display">SEE&nbsp;THROUGH<br /><em>THE&nbsp;WATER</em></h1>
+        <p class="tagline">透明だからこそ、<br>自然との境界線が<br>消えていく。</p>
+        <p class="subcopy">乗るためではなく、自然に没入するためのカヤック</p>
+      </div>
+
+      <div class="hero-media">
+        <video autoplay muted loop playsinline poster="assets/hposter.jpg">
+          <source src="assets/hero.mp4" type="video/mp4" />
+        </video>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ===================== CONCEPT ===================== -->
+  <section class="block wrap" id="concept">
+    <p class="eyebrow">01 — BRAND CONCEPT</p>
+    <p class="ghost solid">CONCEPT</p>
+    <div class="split concept-layout">
+      <div>
+        <h2 class="jp">自然とひとつになる体験をすべての人へ</h2>
+      </div>
+      <div class="prose">
+        <p class="lead">水上アクティビティの新しい楽しみ方で、あなたの施設だけの「特別な体験」を作ってみませんか？<br>
+Clear Kayak Lab では、観光地やリゾート施設へのクリアカヤック導入をサポートしています。</p>
+        <p>海、湖、川。<br>
+目の前に広がる景色を遮らず、水面と水中の世界をそのまま感じられる。<br>
+        <p>Clear Kayak Lab は、<b>「見るためのカヤック」ではなく、「自然に没入するためのカヤック」</b>を追求しています。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- full-bleed video break -->
+  <div class="strip">
+    <video autoplay muted loop playsinline poster="assets/t1.jpg">
+      <source src="assets/pv.mp4" type="video/mp4" />
+    </video>
+  </div>
+
+  <!-- ===================== DIFFERENCE ===================== -->
+  <section class="block wrap" id="difference">
+    <p class="eyebrow">02 — What Makes It Different</p>
+    <p class="ghost solid">DIFFERENCE</p>
+    <div class="split difference-layout">
+      <div><h2 class="jp">通常のカヤックと何が違うの？</h2></div>
+      <div>
+        <p class="subhead">水面を移動する乗り物から、水中景観を体験するアクティビティへ</p>
+        <div class="prose">
+          <p>カヤックというと「水の上を力強く漕いで進むアクティビティ」というイメージが強いですよね。</p>
+          <p>でも、クリアカヤックが体験させてくれるのは、まったく別の世界。</p>
+          <p>水面の上を進むだけでなく、<b>「足元に広がる水中景観そのものを特等席で楽しむ」</b>という、新しいアクティビティなんです。</p>
+          <p>船体すべてが透明だから、まるで水に浮いているような不思議な感覚。足元を通り過ぎる魚たちや、きらめくサンゴ礁、神秘的な湖底の景色が、遮るものなく目に飛び込んできます。</p>
+          <p>この<b>初めての感動</b>があるからこそ、全国の観光施設やリゾート施設で、いま全国のリゾート地や観光施設で、注目のコンテンツとして選ばれています。</p>
+        </div>
+      </div>
+    </div>
+
+    <figure class="figure crop tall sec-figure">
+      <img src="assets/waterscape.jpg" alt="澄んだ水を上空から見下ろすと、サンゴ礁の上をウミガメが泳いでいる" />
+    </figure>
+
+    <div class="tbl-scroll">
+      <table class="wf">
+        <caption><b>通常のカヤックとの比較</b></caption>
+        <thead>
+          <tr>
+            <th class="col-label"><span>項目</span></th>
+            <th class="col-a"><span>クリアカヤック</span></th>
+            <th class="col-b"><span>通常のカヤック</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th>水中観察</th><td class="hl">◎（足元すべてが展望窓）</td><td>×（水上のみ）</td></tr>
+          <tr><th>写真・動画撮影</th><td class="hl">◎（ドローンや水中撮影で映える）</td><td>△（一般的な風景写真）</td></tr>
+          <tr><th>話題性・集客力</th><td class="hl">◎（未体験層への強いフック）</td><td>△（定番アクティビティ）</td></tr>
+          <tr><th>他施設との差別化</th><td class="hl">◎（独自のプレミアムツアー化が可能）</td><td>△（価格競争になりやすい）</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===================== DESIGN PHILOSOPHY ===================== -->
+  <section class="block wrap" id="design">
+    <p class="eyebrow">03 — Design Philosophy</p>
+    <p class="ghost solid">DESIGN</p>
+    <h2 class="jp">自然を主役にする設計</h2>
+
+    <div class="design-layout">
+      <!-- メイン画像：PCでは左側。狭い画面では左上 -->
+      <figure class="figure crop tall design-image-main">
+        <img src="assets/cc8.jpg" alt="透明なカヤックの3/4アングル。船尾側に小さく CLEAR KAYAK LAB のロゴ" />
+      </figure>
+
+      <!-- 前半文章：狭い画面では右上 -->
+      <div class="prose design-intro">
+        <p class="subhead">主役はブランドではなく、目の前の自然であるべきだ</p>
+        <p>私たちはこのクリアカヤックを単なる「売るための製品」だとは思っていません。<br>
+        ゆったりと水面を漂う時間。足元に広がる美しい景色。大切な家族や仲間と「きれいだね」と言い合うひととき。その時間のすべてが、お客様にとっての「一生ものの体験」だと思っています。</p>
+        <p>だからこそ、私たちはある決断をしました。<br>
+        「ブランドの名前をアピールすることよりも、お客様の没入感を最優先したい」</p>
+      </div>
+
+      <!-- 後半文章：1080px以下で左下へ移動 -->
+      <div class="prose design-story">
+        <p>Clear Kayak Lab のロゴは、船体のいちばん後ろにそっと配置してあります。それは、乗っているときも、写真を撮るときも、できる限り視界に入らないようにするためです。<br>
+        せっかくの素敵な写真や映像に残るのが、私たちのブランド名である必要はありません。その場所でしか出会えない美しい景色と、お客様の笑顔だけでいい。
+        記憶に残るべきなのは、ロゴではなく、その瞬間に感じた感動そのものです。</p>
+        <p>私たちは、自然そのものを主役にするためのデザインを追求しました。</p>
+      </div>
+
+      <!-- 追加画像：1080px以下で右下に表示。実画像に合わせてファイル名を変更してください -->
+      <figure class="figure crop tall design-image-sub">
+        <img src="assets/cc9.jpg" alt="Clear Kayak Lab の自然体験イメージ" />
+      </figure>
+    </div>
+  </section>
+
+  <!-- ===================== PRODUCT ===================== -->
+  <section class="block wrap" id="product">
+    <p class="eyebrow">04 — Product Features</p>
+    <p class="ghost solid">PRODUCT</p>
+    <h2 class="jp">プロダクトの機能と信頼性</h2>
+
+    <p class="subhead">「フレームのグラつき」も「余計な人工物」も削ぎ落とした、完全一体成形ボディ。</p>
+    <div class="prose">
+      <p>従来のクリアカヤックに多かった「補強用フレーム」や「後付けシート」を一切なくし、8mm厚の完全一体成型を実現。<br>
+      ガタつきのない高い強度と耐久性を誇ると同時に、乗る人の視界を一切邪魔しません。<br>
+      事業者様が安心して長く運用できる確かな品質と、お客様が水面とひとつになる圧倒的な没入体験を両立した、次世代のクリアカヤックです。</p>
+    </div>
+
+    <div class="split sec-figure product-feature product-feature--image-left">
+      <figure class="figure crop tall product-wide">
+        <img src="assets/cc1.jpg" alt="8mm厚の一体成型構造を採用した、透明なカヤックの船体" />
+      </figure>
+      <div>
+        <h3 class="jp">8mm厚一体成型ボディ×高剛性設計</h3>
+        <div class="prose">
+          <p>船体には約8mm厚の一体成型構造を採用し、見た目の美しさだけでなく、しっかりとした強度にも配慮しています。補強構造によってボディ全体の剛性を高め、安定感のある造りになっています。船底は水の抵抗を抑えやすい滑らかなラインに設計し、従来のクリアカヤックにはない美しさと機能性を両立しています。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="split sec-figure product-feature product-feature--image-right">
+      <div>
+        <h3 class="jp">従来の課題をすべて解決する一体成型で実現する圧倒的没入感</h3>
+        <div class="prose">
+          <p>クリアカヤックの導入にあたり、「フレームの歪みやパーツの不具合で運用が止まる」「補強パーツがせっかくの景観を台無しにする」といったお悩みはありませんか？<br>
+          Clear Kayak Lab のカヤックはパーツの不具合リスクをなくし、視界に一切の無駄がない圧倒的な開放感を実現しました。</p>
+        </div>
+      </div>
+      <figure class="figure crop tall product-wide">
+        <img src="assets/cc0.jpg" alt="上から見た、継ぎ目のない一体成型のクリアカヤック" />
+      </figure>
+    </div>
+
+    <div class="cards cols-2 sec-figure">
+      <div class="card">
+        <img class="shot" src="assets/cc2.jpg" alt="船尾に配置されたCLEAR KAYAK LABのロゴ" />
+        <h3 class="jp">CLEAR KAYAK LABのロゴはお客様の体験を邪魔しない場所へ</h3>
+        <p>優先したのはカヤックに乗る人が感じる自然との一体感と没入感です。ブランドを大きく主張するのではなく、カヤックの上で過ごす人の目線にできるだけ映り込みにくい船尾にロゴは配置しています。</p>
+      </div>
+      <div class="card">
+        <img class="shot" src="assets/cc6.jpg" alt="斜め上から見た、透明な船体の美しいシルエット" />
+        <h3 class="jp">360°どこから見ても美しいシルエット</h3>
+        <p>斜め上から見ることで際立つ、透明な船体と滑らかなボディライン。乗っている時間はもちろん、ビーチに置かれているときや写真・映像に収めたときまで美しく見えることを意識した、CLEAR KAYAK LABだけのデザインです。</p>
+      </div>
+      <div class="card">
+        <img class="shot" src="assets/cc7.jpg" alt="3ピースに分割できる専用パドル" />
+        <h3 class="jp">持ち運びやすい3ピースパドル</h3>
+        <p>パドルには、クリアカヤックのデザインと調和する半透明のブレードを採用。シャフトを含めて3ピースに分割できる構造となっており、使用しないときはコンパクトにまとめることができます。</p>
+      </div>
+      <div class="card">
+        <img class="shot" src="assets/cc5.jpg" alt="透明な専用フロート" />
+        <h3 class="jp">浮力と安定感をサポートする専用フロート</h3>
+        <p>船底とシート部分の溝に合わせて装着する専用フロートを用意。船体内部に収まるよう設計することで、クリアカヤック本来の外観を大きく変えることなく、浮力と安定感を補強します。</p>
+      </div>
+    </div>
+
+    <div class="split sec-figure product-feature product-feature--image-left">
+      <figure class="figure crop tall product-wide">
+        <img src="assets/cc4.jpg" alt="フロートを装着しない状態でも十分な浮力を持つ船体" />
+      </figure>
+      <div>
+        <h3 class="jp">シーンで選べるオプションフロート</h3>
+        <div class="prose">
+          <p>CLEAR KAYAK LABの船体は、フロートを装着しない状態でも十分な浮力と安定感を持つよう設計されています。専用フロートは、その性能を補うための必須装備ではなく、利用シーンや乗員構成に応じて、もう一段安心感を加えたいときのカスタマイズ用サポートアイテムです。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="split sec-figure product-feature product-feature--image-right">
+      <div>
+        <h3 class="jp">開放感を維持する、計算された一体化構造</h3>
+        <div class="prose">
+          <p>船底およびシート部分の溝にフィットさせることで、フロートとクリアカヤックが一体化します。透明な船体による開放感を維持しながら、浮力と安定感を高める設計です。</p>
+        </div>
+      </div>
+      <figure class="figure crop tall product-wide">
+        <img src="assets/cc3.jpg" alt="緩やかな曲線を描く、透明な一体成型のカヤック" />
+      </figure>
+    </div>
+
+    <div class="tbl-scroll">
+      <table class="wf">
+        <caption>プロダクト仕様・特徴</caption>
+        <thead>
+		  <tr>
+			<th class="col-label col-20"><span>項目</span></th>
+			<th class="col-label col-40"><span>特徴</span></th>
+			<th class="col-label col-40"><span>技術・素材の詳細</span></th>
+		  </tr>
+		</thead>
+        <tbody>
+          <tr><th>素材</th><td class="hl">高品質ポリカーボネート</td><td>航空機や防弾ガラス、医療機器にも使用されるドイツ・バイエル社製を採用。</td></tr>
+          <tr><th>耐衝撃性</th><td class="hl">高い耐久性を実現</td><td>大人の男性がハンマーで叩き続けても割れないほどの強度。岩場の多い海や湖でも安心です。</td></tr>
+          <tr><th>UV対策</th><td class="hl">黄ばみや劣化を抑制</td><td>特殊なUVコーティングを施しているため、日焼けによる黄ばみを防ぎ、透明感を長くキープ。</td></tr>
+          <tr><th>安定性</th><td class="hl">初心者でも扱いやすい設計</td><td>人間工学に基づいて計算された船体形状により、高い復元力を持ち転覆を防止。</td></tr>
+          <tr><th>用途</th><td class="hl">幅広い水辺に対応</td><td>海・湖・河川など、あらゆるロケーションで安定した走行性能を発揮。</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===================== BUSINESS VALUE ===================== -->
+  <section class="block wrap" id="business">
+    <p class="eyebrow">05 — Business Value</p>
+    <p class="ghost solid">BUSINESS</p>
+    <div class="split">
+      <div><h2 class="jp">導入すると、ビジネスはどう変わる？</h2></div>
+      <div>
+        <p class="subhead">水辺のロケーションを活かして、新しい集客力と付加価値を</p>
+        <p>お気づきの通り、クリアカヤックは「ただ置いてあるだけ」でも強い存在感を放ちます。ビジネスに導入することで、以下のようなうれしい変化が生まれます。</p>
+      </div>
+    </div>
+
+    <figure class="figure crop sec-figure pv-video">
+      <video autoplay muted loop playsinline poster="assets/img_02.jpg">
+        <source src="assets/ropical-fish-swims.mp4" type="video/mp4" />
+      </video>
+    </figure>
+
+    <div class="rows">
+      <div class="row">
+        <span class="mk">01</span>
+        <div>
+          <h3 class="jp">他施設との明確な差別化</h3>
+          <p>「水中が見えるツアー」という独自の価値により、近隣の競合施設に対して一歩抜け出す強力な強みになります。</p>
+        </div>
+      </div>
+      <div class="row">
+        <span class="mk">02</span>
+        <div>
+          <h3 class="jp">お客様が勝手に広げてくれるSNS拡散</h3>
+          <p>透明なカヤックに乗っている姿や、上空からのドローン撮影は、それだけでSNS上の最高の主役です。体験したお客様が自発的にシェアしたくなるので、広告費をかけずに認知が広がっていきます。</p>
+        </div>
+      </div>
+      <div class="row">
+        <span class="mk">03</span>
+        <div>
+          <h3 class="jp">客単価アップによる収益性の向上</h3>
+          <p>ここでしか味わえないプレミアムな体験だからこそ、通常のレンタルやツアーよりも高い価格設定が可能になり、施設の価値を高めます。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SOLUTIONS ===================== -->
+  <section class="block wrap" id="solutions">
+    <p class="eyebrow">06 — Solutions</p>
+    <p class="ghost solid">SOLUTIONS</p>
+    <div class="split">
+      <div><h2 class="jp">こんなロケーションで活躍しています</h2></div>
+      <div><p class="subhead">あなたの施設の水辺に新しい価値を</p></div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <img class="shot" src="assets/img_02.jpg" alt="透明なカヤックの上で水平線に向かって手を広げる人" />
+        <span class="cap">TYPE 01</span>
+        <h3 class="jp">ホテル・リゾート施設様</h3>
+        <p>プライベートビーチやプールを活かした宿泊者限定アクティビティとして、滞在の満足度をグッと高め、ホテル内での新しい思い出作りを提供できます。</p>
+      </div>
+      <div class="card">
+        <img class="shot" src="assets/t3.jpg" alt="透明なカヤックを2人で漕ぐガイドツアーの様子" />
+        <span class="cap">TYPE 02</span>
+        <h3 class="jp">マリンショップ・ツアー事業者様</h3>
+        <p>「水中観察ツアー」「サンセット・ナイトツアー」など、ロケーションを活かした高単価な新メニューの構築。</p>
+      </div>
+      <div class="card">
+        <img class="shot" src="assets/img_13.jpg" alt="穏やかで澄んだ水面に透明なカヤックがぽつんと浮かぶ" />
+        <span class="cap">TYPE 03</span>
+        <h3 class="jp">グランピング・レジャー施設様</h3>
+        <p>美しい湖畔や清流を活かした自然体験型コンテンツとして、トレンドに敏感な若年層やファミリー層の心を掴みます。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TOUR / CASE =====================
+  <section class="block wrap" id="tour">
+    <p class="eyebrow">07 — Case Studies</p>
+    <p class="ghost solid">TOUR</p>
+    <div class="split">
+      <div>
+        <h2 class="jp">導入事例</h2>
+        <p class="subhead">導入実績・事例紹介</p>
+        <div class="prose">
+          <p>実際の導入先施設名、ロケーション、導入台数、ツアーの様子、導入後の具体的な成果などを写真付きで掲載は難しいのでツアー提案？</p>
+        </div>
+      </div>
+      <figure class="figure crop tall">
+        <img src="assets/img_11.jpg" alt="透明なカヤックのアングル写真（モデルツアー用ビジュアル案）" />
+      </figure>
+    </div>
+  </section> -->
+
+  <!-- full-bleed image break
+  <div class="strip">
+    <img src="assets/img_06.jpg" alt="透明なカヤックの側面プロフィール。緩やかな曲線の一体成形ボディ" />
+  </div> -->
+
+  <!-- ===================== COMPARISON ===================== -->
+  <section class="block wrap" id="compare">
+    <p class="eyebrow">07 — COMPARISON</p>
+    <p class="ghost solid">OLD <span class="vs">VS</span> NEW</p>
+    <div class="split">
+      <div><h2 class="jp">他社旧型製品との比較</h2></div>
+      <div><p class="subhead">フレーム式の旧型製品 VS<br>フレームレス一体成形のCLEAR KAYAK LAB</p></div>
+    </div>
+
+    <div class="tbl-scroll">
+      <table class="wf">
+        <caption>他社旧型製品 と CLEAR KAYAK LAB</caption>
+        <thead>
+          <tr>
+            <th class="col-label"><span>比較項目</span></th>
+            <th class="col-b"><span>他社旧型製品</span></th>
+            <th class="col-a"><span>CLEAR KAYAK LAB</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th>組立時間</th><td>フレームやシートの取り付けに約1〜2時間</td><td class="hl">組み立て不要。すぐに使用可能</td></tr>
+          <tr><th>保管性</th><td>重ねて収納できず、保管スペースが必要</td><td class="hl">重ねて収納可能。複数艇でも省スペースで保管でき、悪天候時の移動・収納もスムーズ</td></tr>
+          <tr><th>安全性</th><td>金属フレームが直射日光で高温になるほか、フレーム端部によるケガのリスクも</td><td class="hl">フレームレス一体成形。熱を持つ金属フレームや鋭利な接合部がなく、安全性に配慮した設計</td></tr>
+          <tr><th>耐久性</th><td>金属フレームの腐食や、樹脂製ステー・小型部品の劣化、破損・紛失リスク</td><td class="hl">腐食する金属部品や劣化・脱落しやすい接合パーツをなくし、ボディを厚くすることで剛性・耐衝撃性を向上</td></tr>
+          <tr><th>浮力</th><td>2人乗りとしては小型で、サブフロートを装着しても波や揺れの影響を受けやすい。激しく揺らすと水が入ってくることも</td><td class="hl">長さ3800mm・幅940mmと2人乗りには十分なサイズ。専用フロートでさらに浮力を確保。1人当たり110kg（計220kg）の荷重テストも難なくクリア</td></tr>
+          <tr><th>視覚情報 /<br>SNS映え</th><td>シートやフレーム、ロゴが視界や写真に入り、水中景観を遮ってしまう</td><td class="hl">フレームレスによるパノラマビュー。ロゴも船尾側に配置し、自然への没入感と写真映えを追求</td></tr>
+          <tr><th>乗り心地</th><td>フレーム固定式シートは揺れやすく、急な座面角度や船体のきしみ音も負担に</td><td class="hl">船体そのものを緩やかな曲線の座面に設計。自然な姿勢でリラックスして楽しめる</td></tr>
+          <tr><th>旋回性</th><td>水の抵抗を受けやすく、操作に慣れるまで時間がかかる</td><td class="hl">船底を凹凸の立体形状にすることで水が横に抜け、水流をコントロールし旋回性を向上。操作時の負担と疲労を軽減</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <<section class="block wrap" id="faq">
+  <p class="eyebrow">08 — FAQ</p>
+  <p class="ghost solid">FAQ</p>
+
+  <div class="split">
+    <div>
+      <h2 class="jp">よくある質問</h2>
+    </div>
+
+    <div>
+      <p class="subhead">あらゆる水辺のロケーションに、新しい価値を</p>
+
+      <div class="prose">
+        <p>
+          製品の品質やメンテナンス、導入・購入、実際の活用方法まで、
+          CLEAR KAYAK LABについてよくいただくご質問をまとめました。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="faq">
+
+    <!-- 製品・品質について -->
+    <div class="faq-cat">
+      <h3>製品・品質について</h3>
+
+      <details open>
+        <summary>どんな素材でできていますか？</summary>
+        <div class="a">
+          船体には高品質なポリカーボネートを使用しています。
+          航空機の風防や防弾ガラス、医療機器にも採用されるドイツ・バイエル社製の素材で、
+          高い透明度と強度を両立しています。
+        </div>
+      </details>
+
+      <details>
+        <summary>本当に割れませんか？岩場でも使えますか？</summary>
+        <div class="a">
+          大人の男性がハンマーで叩き続けても割れないほどの耐衝撃性があります。
+          フレームレスの一体成形でボディを厚くすることで剛性を高めており、
+          岩場の多い海や湖でも通常のご使用で破損する心配はほとんどありません。
+        </div>
+      </details>
+
+      <details>
+        <summary>直射日光で黄ばんだり、劣化したりしませんか？</summary>
+        <div class="a">
+          特殊なUVコーティングを施しており、
+          日焼けによる黄ばみや白化を抑えて透明感を長くキープします。
+          屋外保管が前提の事業者様でも安心してご使用いただけます。
+        </div>
+      </details>
+
+      <details>
+        <summary>サイズ・定員・耐荷重を教えてください。</summary>
+        <div class="a">
+          長さ3,800mm・幅940mmで、2人乗りに十分なサイズです。
+          1人あたり110kg（計220kg）の荷重テストもクリアしています。
+          専用フロートの併用で、さらに浮力を確保できます。
+        </div>
+      </details>
+
+      <details>
+        <summary>転覆しやすくないですか？初心者でも大丈夫ですか？</summary>
+        <div class="a">
+          人間工学に基づいて計算された船体形状により高い復元力を持ち、
+          転覆しにくい設計です。
+          船体そのものが緩やかな曲線の座面になっているため、
+          初めての方でも自然な姿勢でリラックスして楽しめます。
+        </div>
+      </details>
+
+      <details>
+        <summary>金属フレームのように熱くなったり、ケガの原因になったりしませんか？</summary>
+        <div class="a">
+          フレームレスの一体成形のため、
+          直射日光で高温になる金属パーツや、
+          ケガの原因になる鋭利な接合部がありません。
+          安全性に配慮した構造です。
+        </div>
+      </details>
+
+      <details>
+        <summary>パドルは付属しますか？</summary>
+        <div class="a">
+          専用の透明ブレードのパドルをご用意しています。
+          ご利用の台数や運用スタイルに合わせてご相談ください。
+        </div>
+      </details>
+    </div>
+
+
+    <!-- メンテナンス・運用について -->
+    <div class="faq-cat">
+      <h3>メンテナンス・運用について</h3>
+
+      <details>
+        <summary>日常のメンテナンスは何をすればいいですか？</summary>
+        <div class="a">
+          使用後に真水で洗い流し、
+          直射日光を避けて乾燥・保管していただくのが基本です。
+          組み立て・分解が不要なため、
+          運用の手間は最小限に抑えられます。
+        </div>
+      </details>
+
+      <details>
+        <summary>海水で使ったあとの塩害が心配です。</summary>
+        <div class="a">
+          腐食する金属部品や、
+          劣化・脱落しやすい接合パーツを排した構造のため、
+          塩害のリスクは大幅に低減されています。
+          使用後は真水での洗浄を推奨しています。
+        </div>
+      </details>
+
+      <details>
+        <summary>保管にはどれくらいのスペースが必要ですか？</summary>
+        <div class="a">
+          複数艇を重ねて収納できるため、省スペースで保管できます。
+          悪天候時の屋内退避やオフシーズンの保管もスムーズです。
+        </div>
+      </details>
+
+      <details>
+        <summary>組み立てに時間はかかりますか？</summary>
+        <div class="a">
+          組み立ては不要です。
+          フレーム式の旧型製品では取り付けに1〜2時間かかることもありますが、
+          本製品は届いたその日からご使用いただけます。
+        </div>
+      </details>
+
+      <details>
+        <summary>傷がついたり、破損したりした場合は？</summary>
+        <div class="a">
+          状態に応じて補修・交換のご相談を承ります。
+          小型部品の脱落・紛失リスクがない構造のため、
+          トラブル対応の負担も抑えられます。
+        </div>
+      </details>
+
+      <details>
+        <summary>透明な船体は傷が目立ちませんか？</summary>
+        <div class="a">
+          使用に伴う細かなスレは生じますが、
+          UVコーティングと厚みのあるボディにより、
+          視界や強度への影響は最小限です。
+        </div>
+      </details>
+    </div>
+
+
+    <!-- 導入・購入について -->
+    <div class="faq-cat">
+      <h3>導入・購入について</h3>
+
+      <details>
+        <summary>個人での購入はできますか？</summary>
+        <div class="a">
+          基本的には観光施設・リゾート施設さま向けの導入支援を行っていますが、
+          個人購入のご相談も承っています。
+          まずはお問い合わせください。
+        </div>
+      </details>
+
+      <details>
+        <summary>大口発注で価格は変わりますか？</summary>
+        <div class="a">
+          発注台数や仕様により価格は変動します。
+          個別にお見積もりいたしますので、
+          ご検討台数をお知らせください。
+        </div>
+      </details>
+
+      <details>
+        <summary>遠方のリゾート地ですが、ちゃんと納品してもらえますか？</summary>
+        <div class="a">
+          全国への納品手配に対応しています。
+          離島や遠方でも、確実にお届けできるよう手配いたします。
+        </div>
+      </details>
+
+      <details>
+        <summary>納期の目安はどれくらいですか？</summary>
+        <div class="a">
+          在庫状況とご発注台数によります。
+          お問い合わせ時に、具体的な納期をご案内します。
+        </div>
+      </details>
+
+      <details>
+        <summary>導入時のサポートはありますか？</summary>
+        <div class="a">
+          製品をお送りするだけでなく、
+          遠方への確実な納品手配から導入時の細かなご質問まで、
+          責任を持って対応します。
+          運用の立ち上げについてもご相談ください。
+        </div>
+      </details>
+
+      <details>
+        <summary>見積もりや相談に費用はかかりますか？</summary>
+        <div class="a">
+          ご相談・お見積もりは無料です。
+          お気軽にお問い合わせください。
+        </div>
+      </details>
+
+      <details>
+        <summary>実物を見たり、試したりできますか？</summary>
+        <div class="a">
+          実機のご確認について、個別にご相談を承っています。
+          お問い合わせフォームからご連絡ください。
+        </div>
+      </details>
+    </div>
+
+
+    <!-- ツアー・活用について -->
+    <div class="faq-cat">
+      <h3>ツアー・活用について</h3>
+
+      <details>
+        <summary>どんな施設で活用できますか？</summary>
+        <div class="a">
+          ホテル・リゾート、
+          マリンショップ・ツアー事業者、
+          グランピング・レジャー施設など、
+          水辺のロケーションを持つ幅広い施設で活用いただけます。
+        </div>
+      </details>
+
+      <details>
+        <summary>どんなツアーが組めますか？</summary>
+        <div class="a">
+          水中観察ツアー、
+          サンセット・ナイトツアー、
+          宿泊者限定の早朝プラン、
+          ファミリー向けの短時間体験など、
+          ロケーションに合わせたメニューを設計できます。
+        </div>
+      </details>
+
+      <details>
+        <summary>プールでも使えますか？</summary>
+        <div class="a">
+          はい。
+          プライベートプールやインフィニティプールを活かした、
+          宿泊者限定アクティビティとしてもご利用いただけます。
+        </div>
+      </details>
+
+      <details>
+        <summary>SNSでの集客に、本当に効果がありますか？</summary>
+        <div class="a">
+          透明なカヤックに乗る姿や、
+          上空からのドローン映像はSNS向けのコンテンツとして活用できます。
+          体験者自身による投稿やシェアを促しやすいことも、
+          透明カヤックならではの特徴です。
+        </div>
+      </details>
+
+      <details>
+        <summary>悪天候や冬季はどうすればいいですか？</summary>
+        <div class="a">
+          重ねて収納できるため、
+          悪天候時は速やかに退避・保管できます。
+          オフシーズンの省スペース保管にも向いています。
+        </div>
+      </details>
+    </div>
+
+  </div>
+</section>
+  <!-- ===================== FAQ ===================== 
+  <section class="block wrap" id="faq">
+    <p class="eyebrow">08 — FAQ</p>
+    <p class="ghost solid">FAQ</p>
+    <div class="split">
+      <div><h2 class="jp">よくある質問</h2></div>
+      <div>
+        <p class="subhead">あらゆる水辺のロケーションに、新しい価値を</p>
+        <div class="prose">
+          <p>「耐用年数は？」「メンテナンス方法は？」「個人購入は可能か？」など、ユーザーや事業者が検索するリアルな疑問と回答を、<b>20〜30問のボリュームで格納</b>。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq">
+      <details open>
+        <summary>耐用年数は？</summary>
+        <div class="a">（回答テキストが入ります。以下は想定質問例。実コピーは別途 20〜30 問を用意。）</div>
+      </details>
+      <details>
+        <summary>メンテナンス方法は？</summary>
+        <div class="a">（回答テキストが入ります。）</div>
+      </details>
+      <details>
+        <summary>個人購入は可能か？</summary>
+        <div class="a">（回答テキストが入ります。）</div>
+      </details>
+    </div>
+  </section> -->
+ <!-- ===================== CONTACT ===================== -->
+<section class="block wrap" id="contact">
+  <p class="eyebrow">09 — Contact</p>
+  <p class="ghost solid">CONTACT</p>
+
+  <div class="split">
+    <div>
+      <h2 class="jp">お問い合わせ・導入相談</h2>
+      <p class="subhead">無料相談・お見積もり</p>
+
+      <div class="prose">
+        <p>「遠方のリゾート地だけど、ちゃんと納品してもらえる？」「大口発注だと価格はどれくらい変わる？」など、気になることがあれば何でもお気軽にご相談ください。</p>
+        <p>私たちは、製品をただお送りするだけでなく、遠方への確実な納品手配から、導入時の細かなご質問まで責任を持って対応いたします。</p>
+      </div>
+    </div>
+
+    <form class="form" name="contact" method="POST" data-netlify="true">
+      <input type="hidden" name="form-name" value="contact">
+      <div class="field">
+        <label for="company">施設名・会社名</label>
+        <input
+          class="input"
+          type="text"
+          id="company"
+          name="company"
+          autocomplete="organization"
+        >
+      </div>
+
+      <div class="field">
+        <label for="name">ご担当者名</label>
+        <input
+          class="input"
+          type="text"
+          id="name"
+          name="name"
+          autocomplete="name"
+          required
+        >
+      </div>
+
+      <div class="field">
+        <label for="email">メールアドレス</label>
+        <input
+          class="input"
+          type="email"
+          id="email"
+          name="email"
+          autocomplete="email"
+          required
+        >
+      </div>
+
+      <div class="field">
+        <label for="message">ご相談内容</label>
+        <textarea
+          class="input area"
+          id="message"
+          name="message"
+          required
+        ></textarea>
+      </div>
+
+      <button class="btn" type="submit">送信</button>
+    </form>
+  </div>
+</section>
+  <!-- ===================== CTA BAND + FOOTER (波形カーブの濃色エリア) ===================== -->
+  <div class="endzone">
+    <svg class="wave" viewBox="0 0 1440 130" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,66 C 210,132 360,120 560,86 C 760,52 900,4 1120,26 C 1268,41 1360,74 1440,58 L 1440,130 L 0,130 Z" />
+    </svg>
+
+    <div class="wrap">
+      <!--
+<div class="cta-band">
+  <a class="res-logo" href="#contact" aria-label="お問い合わせ・導入相談へ"></a>
+  <p class="pitch">
+    まずは無料相談で、施設のロケーションに合わせた導入プラン・料金イメージをお伝えします。
+  </p>
+</div>
+-->
+
+
+      <footer class="site">
+        <div class="foot-grid">
+          <div>
+            <div class="brand-sm"><a class="brandmark" href="#top" aria-label="CLEAR KAYAK LAB"><img src="assets/clearkayaklab_logo.svg" alt="CLEAR KAYAK LAB"></a></div>
+            <p style="margin-top:16px;font-size:13px;">まずは無料相談で、料金イメージをお伝えします。</p>
+          </div>
+          <div>
+            <h4>MENU</h4>
+            <ul>
+              <li><a href="#concept">CONCEPT</a></li>
+              <li><a href="#difference">DIFFERENCE</a></li>
+              <li><a href="#product">PRODUCT</a></li>
+              <li><a href="#solutions">SOLUTIONS</a></li>
+              <li><a href="#faq">FAQ</a></li>
+              <li><a href="#contact">CONTACT</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>COMPANY</h4>
+            <ul>
+              <li><a href="#">会社概要</a></li>
+              <li><a href="#">プライバシーポリシー</a></li>
+              <li><a href="#">特定商取引法に基づく表記</a></li>
+              <li><a href="#">Instagram</a></li>
+            </ul>
+          </div>
+        </div>
+        <p class="copyright">© 2026 CLEAR KAYAK LAB — DESIGN MOCK</p>
+      </footer>
+    </div>
+  </div>
+
+</div>
+
+<!-- fixed circular CTA -->
+<a class="cta-fab" href="#contact" aria-label="無料相談へ">
+  <svg class="ring" viewBox="0 0 104 104" aria-hidden="true">
+    <defs><path id="cpath" d="M52,52 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0" /></defs>
+    <text><textPath href="#cpath">無料相談・お見積もり ・ FREE CONSULTATION ・ </textPath></text>
+  </svg>
+  <span class="core">無料相談<br />CONTACT</span>
+</a>
+
+
+<script>
+(function () {
+  var html = document.documentElement;
+  var btn = document.querySelector('.hamburger-btn');
+  var scrim = document.querySelector('.nav-scrim');
+  var topbar = document.querySelector('.topbar');
+  var header = document.querySelector('header.site');
+  if (!btn || !scrim || !header) return;
+
+  function setHeaderHeight() {
+    var h = (topbar ? topbar.offsetHeight : 0) + header.offsetHeight;
+    html.style.setProperty('--hdr-h', h + 'px');
+  }
+  setHeaderHeight();
+  window.addEventListener('resize', setHeaderHeight);
+
+  function openNav() {
+    html.classList.add('nav-open');
+    btn.setAttribute('aria-expanded', 'true');
+  }
+  function closeNav() {
+    html.classList.remove('nav-open');
+    btn.setAttribute('aria-expanded', 'false');
+  }
+  btn.addEventListener('click', function () {
+    html.classList.contains('nav-open') ? closeNav() : openNav();
+  });
+  scrim.addEventListener('click', closeNav);
+  document.querySelectorAll('.mobile-nav a').forEach(function (a) {
+    a.addEventListener('click', closeNav);
+  });
+  window.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeNav();
+  });
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 1080) closeNav();
+  });
+})();
+</script>
