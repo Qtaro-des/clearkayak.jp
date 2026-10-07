@@ -239,6 +239,7 @@
     }
   }
 
+ 
   /* ============================================================
      FIGURES / IMAGE STRIPS
      ============================================================ */
@@ -258,6 +259,12 @@
   .figure.crop.tall img,
   .figure.crop.tall video { height: clamp(360px, 44vw, 640px); }
   .sec-figure { margin-top: clamp(36px, 5vw, 56px); }
+
+  @media (max-width: 600px) {
+  #difference .sec-figure img {
+    object-position: 70% center;
+  }
+}
 
   .strip {
     position: relative;
@@ -489,6 +496,29 @@
     height: clamp(380px, 60vh, 720px);
     object-fit: cover;
   }
+
+   @media (max-width: 600px) {
+  .hero-copy .display {
+    font-size: 11.5vw;
+    line-height: 0.92;
+    letter-spacing: -0.045em;
+    margin-inline: 0;
+    max-width: 100%;
+  }
+
+  .hero-media {
+    overflow: hidden;
+  }
+
+  .hero-media video,
+  .hero-media img.fallback {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: clamp(420px, 135vw, 620px);
+    object-fit: cover;
+  }
+}
  
   /* ============================================================
      TABLES — comparison / spec
@@ -502,6 +532,7 @@
     border-radius: 16px;
     padding: clamp(18px, 3vw, 40px);
   }
+  
   table.wf {
     width: 100%;
     border-collapse: separate;
@@ -886,19 +917,39 @@ table.wf th.col-b {
     color: #000;
     line-height: 1.4;
   }
-  .cta-fab .ring {
-    position: absolute;
-    inset: 6px;
-    animation: spin 14s linear infinite;
+ .cta-fab .ring {
+  position: absolute;
+  inset: 6px;
+  width: calc(100% - 12px);
+  height: calc(100% - 12px);
+
+  transform-box: fill-box;
+  transform-origin: center;
+
+  animation: spin 14s linear infinite;
+}
+
+.cta-fab .ring text {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: .22em;
+  fill: #000;
+}
+
+.cta-fab .ring textPath {
+  dominant-baseline: middle;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
   }
-  .cta-fab .ring text {
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 7.7px;
-    font-weight: bold;
-    letter-spacing: .32em;
-    fill: #000;
+
+  to {
+    transform: rotate(360deg);
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
+}
   @media (prefers-reduced-motion: reduce) { .cta-fab .ring { animation: none; } }
 
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
@@ -1017,6 +1068,7 @@ Clear Kayak Lab では、観光地やリゾート施設へのクリアカヤッ�
       <img src="assets/waterscape.jpg" alt="澄んだ水を上空から見下ろすと、サンゴ礁の上をウミガメが泳いでいる" />
     </figure>
 
+    
     <div class="tbl-scroll">
       <table class="wf">
         <caption><b>通常のカヤックとの比較</b></caption>
@@ -1310,7 +1362,7 @@ Clear Kayak Lab では、観光地やリゾート施設へのクリアカヤッ�
   </section>
 
   <!-- ============ FAQ ============ -->
-  <<section class="block wrap" id="faq">
+  <section class="block wrap" id="faq">
   <p class="eyebrow">08 — FAQ</p>
   <p class="ghost solid">FAQ</p>
 
@@ -1749,7 +1801,7 @@ Clear Kayak Lab では、観光地やリゾート施設へのクリアカヤッ�
 <!-- fixed circular CTA -->
 <a class="cta-fab" href="#contact" aria-label="無料相談へ">
   <svg class="ring" viewBox="0 0 104 104" aria-hidden="true">
-    <defs><path id="cpath" d="M52,52 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0" /></defs>
+    <defs><path id="cpath" d="M52,52 m-43,0 a43,43 0 1,1 86,0 a43,43 0 1,1 -86,0" /></defs>
     <text><textPath href="#cpath">無料相談・お見積もり ・ FREE CONSULTATION ・ </textPath></text>
   </svg>
   <span class="core">無料相談<br />CONTACT</span>
