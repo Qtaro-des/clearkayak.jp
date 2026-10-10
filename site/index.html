@@ -69,6 +69,7 @@
 
   img, video { max-width: 100%; }
 
+
   /* ============================================================
      LAYOUT PRIMITIVES
      ============================================================ */
@@ -225,6 +226,13 @@
     }
 
     .design-image-sub { display: block; }
+  }
+
+  @media (min-width: 701px) {
+    .cell-badge,
+    .cell-label {
+      display: none;
+    }
   }
 
   @media (max-width: 700px) {
@@ -639,6 +647,141 @@ table.wf th.col-b {
   }
   table.wf tbody td { color: var(--ink-mid); }
   table.wf tbody td.hl { color: var(--accent); font-weight: 700; }
+
+  /* --- モバイル：横スワイプをやめ、1行＝1カードの縦積みに。
+         配色はこのページの既存トークンをそのまま踏襲
+         （推しの値=hl→accent、対照側→band、仕様表の特徴→accent-soft のボックス） --- */
+  @media (max-width: 700px) {
+    .tbl-scroll {
+      overflow-x: visible;
+      background: none;
+      border-radius: 0;
+      padding: 0;
+      margin-top: 32px;
+    }
+    table.wf {
+      min-width: 0;
+      width: 100%;
+      table-layout: auto;
+      border-spacing: 0;
+      display: block;
+      font-size: 15px;
+    }
+    table.wf caption {
+      display: block;
+      width: 100%;
+      max-width: none;
+      padding: 0 0 16px;
+      white-space: nowrap;
+      letter-spacing: .12em;
+    }
+    table.wf thead { display: none; }
+    table.wf tbody { display: block; }
+    table.wf tbody tr {
+      display: block;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+    table.wf tbody tr:last-child { margin-bottom: 0; }
+    table.wf tbody th {
+      display: block;
+      width: auto;
+      white-space: normal;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+      padding: 0 0 12px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    /* 比較表（col-a/col-b）：左にバッジ（判定記号）、右にラベル＋本文 */
+    table.wf.wf-compare tbody td {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      width: auto;
+      padding: 0 0 14px;
+      border-bottom: 0;
+    }
+    table.wf.wf-compare tbody td:last-child { padding-bottom: 0; }
+    table.wf.wf-compare tbody td + td {
+      border-top: 1px solid color-mix(in srgb, var(--line-strong) 28%, transparent);
+      padding-top: 14px;
+    }
+    table.wf.wf-compare tbody td .cell-badge {
+      flex: 0 0 auto;
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      background: var(--band);
+    }
+    table.wf.wf-compare tbody td.hl .cell-badge { background: var(--accent); }
+    table.wf.wf-compare tbody td .cell-meta {
+      flex: 1 1 auto;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    table.wf.wf-compare tbody td .cell-label {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      color: var(--ink-faint);
+    }
+    table.wf.wf-compare tbody td.hl .cell-label { color: var(--accent-deep); }
+    table.wf.wf-compare tbody td .cell-text {
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.65;
+      color: var(--ink-mid);
+    }
+    table.wf.wf-compare tbody td.hl .cell-text { color: var(--accent); font-weight: 700; }
+
+    /* 仕様表（col-labelのみ＝優劣比較ではない）：
+       特徴＝ハイライトボックス／技術・素材の詳細＝通常文 */
+    table.wf.wf-spec tbody td {
+      display: block;
+      width: auto;
+      padding: 0;
+      border-bottom: 0;
+    }
+    table.wf.wf-spec tbody td + td {
+      border-top: 0;
+      padding-top: 0;
+    }
+    table.wf.wf-spec tbody td.hl {
+      margin-bottom: 12px;
+    }
+    table.wf.wf-spec .spec-box {
+      display: inline-block;
+      background: var(--accent-soft);
+      color: var(--accent-deep);
+      font-size: 14.5px;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 9px;
+      line-height: 1.5;
+    }
+    table.wf.wf-spec .spec-body {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.7;
+      color: var(--ink-mid);
+    }
+  }
 
   /* ============================================================
      STACKED VALUE ROWS — Business Value
@@ -1063,7 +1206,7 @@ Clear Kayak Lab では、観光地やリゾート施設へのクリアカヤッ�
           <p>でも、クリアカヤックが体験させてくれるのは、まったく別の世界。</p>
           <p>水面の上を進むだけでなく、<b>「足元に広がる水中景観そのものを特等席で楽しむ」</b>という、新しいアクティビティなんです。</p>
           <p>船体すべてが透明だから、まるで水に浮いているような不思議な感覚。足元を通り過ぎる魚たちや、きらめくサンゴ礁、神秘的な湖底の景色が、遮るものなく目に飛び込んできます。</p>
-          <p>この<b>初めての感動</b>があるからこそ、全国の観光施設やリゾート施設で、いま全国のリゾート地や観光施設で、注目のコンテンツとして選ばれています。</p>
+          <p>この<b>初めての感動</b>があるからこそ、いま全国のリゾート地や観光施設で、注目のコンテンツとして選ばれています。</p>
         </div>
       </div>
     </div>
@@ -1084,10 +1227,10 @@ Clear Kayak Lab では、観光地やリゾート施設へのクリアカヤッ�
           </tr>
         </thead>
         <tbody>
-          <tr><th>水中観察</th><td class="hl">◎（足元すべてが展望窓）</td><td>×（水上のみ）</td></tr>
-          <tr><th>写真・動画撮影</th><td class="hl">◎（ドローンや水中撮影で映える）</td><td>△（一般的な風景写真）</td></tr>
-          <tr><th>話題性・集客力</th><td class="hl">◎（未体験層への強いフック）</td><td>△（定番アクティビティ）</td></tr>
-          <tr><th>他施設との差別化</th><td class="hl">◎（独自のプレミアムツアー化が可能）</td><td>△（価格競争になりやすい）</td></tr>
+          <tr><th>水中観察</th><td class="hl">◎ 足元すべてが展望窓</td><td>× 水上のみ</td></tr>
+          <tr><th>写真・動画撮影</th><td class="hl">◎ ドローンや水中撮影で映える</td><td>△ 一般的な風景写真</td></tr>
+          <tr><th>話題性・集客力</th><td class="hl">◎ 未体験層への強いフック</td><td>△ 定番アクティビティ</td></tr>
+          <tr><th>他施設との差別化</th><td class="hl">◎ 独自のプレミアムツアー化が可能</td><td>△ 価格競争になりやすい</td></tr>
         </tbody>
       </table>
     </div>
@@ -1848,6 +1991,77 @@ Clear Kayak Lab では、観光地やリゾート施設へのクリアカヤッ�
   });
   window.addEventListener('resize', function () {
     if (window.innerWidth > 1080) closeNav();
+  });
+})();
+</script>
+<script>
+(function () {
+  // モバイル表示の積み重ねカードで、各値セルを組み替える。
+  // ・比較表（col-a/col-bあり）：バッジ（判定記号）＋ラベル＋本文
+  // ・仕様表（col-labelのみ＝優劣比較ではない）：特徴＝ハイライトボックス／詳細＝通常文
+  document.querySelectorAll('table.wf').forEach(function (table) {
+    var headers = Array.prototype.map.call(
+      table.querySelectorAll('thead th'),
+      function (th) {
+        return {
+          text: (th.textContent || '').trim(),
+          isCompareCol: th.classList.contains('col-a') || th.classList.contains('col-b')
+        };
+      }
+    );
+    var isComparison = headers.some(function (h) { return h.isCompareCol; });
+    table.classList.add(isComparison ? 'wf-compare' : 'wf-spec');
+
+    table.querySelectorAll('tbody tr').forEach(function (tr) {
+      var cells = tr.querySelectorAll('td');
+      cells.forEach(function (td, i) {
+        var h = headers[i + 1];
+        if (!h) return;
+
+        var isHl = td.classList.contains('hl');
+        var raw = (td.textContent || '').trim();
+
+        if (!isComparison) {
+          var spec = document.createElement('span');
+          spec.className = isHl ? 'spec-box' : 'spec-body';
+          spec.textContent = raw;
+          td.textContent = '';
+          td.appendChild(spec);
+          return;
+        }
+
+        var symbol = '';
+        var m = raw.match(/^([◎○×△])[\s　]*/);
+        if (m) {
+          symbol = m[1];
+          raw = raw.slice(m[0].length).trim();
+        } else {
+          symbol = isHl ? '◎' : '×';
+        }
+
+        var badge = document.createElement('span');
+        badge.className = 'cell-badge';
+        badge.setAttribute('aria-hidden', 'true');
+        badge.textContent = symbol;
+
+        var labelEl = document.createElement('span');
+        labelEl.className = 'cell-label';
+        labelEl.textContent = h.text;
+
+        var textEl = document.createElement('span');
+        textEl.className = 'cell-text';
+        textEl.textContent = raw;
+
+        var meta = document.createElement('span');
+        meta.className = 'cell-meta';
+        meta.appendChild(labelEl);
+        meta.appendChild(textEl);
+
+        td.textContent = '';
+        td.appendChild(badge);
+        td.appendChild(meta);
+      });
+    });
   });
 })();
 </script>
