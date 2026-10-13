@@ -285,6 +285,19 @@
   .strip > img,
   .strip > video { width: 100%; height: 100%; object-fit: cover; display: block; }
 
+  @media (max-width: 600px) {
+  .strip {
+    height: 420px;
+  }
+
+  .strip > img,
+  .strip > video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
   /* ============================================================
      HEADER / NAV — swagger.jp のレイアウトを踏襲
      （上部の細い告知バー ＋ ロゴ左寄せ＋ロゴ右隣に2段組ナビ。
@@ -766,8 +779,8 @@ table.wf th.col-b {
     }
     table.wf.wf-spec .spec-box {
       display: inline-block;
-      background: var(--accent-soft);
-      color: var(--accent-deep);
+      background: var(--accent);
+      color: var(--surface);
       font-size: 14.5px;
       font-weight: 700;
       padding: 8px 14px;
@@ -790,7 +803,7 @@ table.wf th.col-b {
   .row {
     display: grid;
     grid-template-columns: 56px minmax(0, 1fr);
-    gap: 24px;
+    /* gap: 24px; */
     padding: 26px 0;
     border-bottom: 1px solid var(--line);
   }
@@ -830,7 +843,21 @@ table.wf th.col-b {
   }
   /* 2x2 grid variant — Product Features detail cards (no TYPE caption) */
   .cards.cols-2 { grid-template-columns: repeat(2, 1fr); }
-  @media (max-width: 700px) { .cards.cols-2 { grid-template-columns: 1fr; } }
+  @media (max-width: 700px) { 
+    .cards.cols-2 { grid-template-columns: 1fr; } 
+    .prose p {
+      font-size: 17px;
+      line-height: 1.8;
+    }
+
+    table.wf.wf-compare tbody td .cell-text {
+      font-size: 17px;
+    }
+
+    table.wf.wf-spec .spec-body {
+      font-size: 16px;
+    }
+  }
 
   .cards.cols-2 .card h3.jp {
     margin-bottom: -6px;
@@ -1186,11 +1213,17 @@ Clear Kayak Lab では、観光地やリゾート施設へのクリアカヤッ�
     </div>
   </section>
 
-  <!-- full-bleed video break -->
+  <!-- full-bleed promotion visual -->
   <div class="strip">
+
+    <!-- 動画へ戻す場合はこちらを使用
     <video autoplay muted loop playsinline poster="assets/t1.jpg">
       <source src="assets/pv.mp4" type="video/mp4" />
     </video>
+    -->
+
+    <img src="assets/promotion.jpg" alt="CLEAR KAYAK LAB プロモーションイメージ" />
+
   </div>
 
   <!-- ===================== DIFFERENCE ===================== -->
